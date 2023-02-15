@@ -138,7 +138,7 @@ void updateIncorrectGuess(int& incorrectGuess){
         correctChars (string): a string that stores correct inputs of player
         incorrectGuess (int): a number that stores the number of player's wrong guess
         incorrectChars (string): a string that stores incorrect inputs of player
-    Returns:
+    Returns: hello
         void
 ***/
 void processData(const char ch, const string& word, 
