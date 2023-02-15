@@ -83,7 +83,7 @@ bool checkContinuePlaying(char isContinued) {
 
 
 /***
-    Args://
+    Args:
         
     Returns:
         isContinues (char) : player's choice (continue playing or not)
