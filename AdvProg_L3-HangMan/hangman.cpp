@@ -106,7 +106,7 @@ void updateSecretWord(string& secretWord, const char ch, const string& word)
 }
 
 /***
-    Args:
+    Args://
         ch (char): a character
         chars (string): an array of characters
     Returns:
