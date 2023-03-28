@@ -1,166 +1,194 @@
-#include <iostream>
-#include "hangman.h"
+#include "simpleai.h"
 
-using std::string;
-using std::vector;
-using std::ifstream;
-using std::domain_error;
-using std::cin;
+int readMaxGuess()
+{
+    int maxGuess;
+    cout << endl << "Enter the number of incorrect guesses: ";
+    cin >> maxGuess;
+    return maxGuess;
+}
+
+int readWordLen()
+{
+    int wordLen;
+    cout << endl << "Enter the number characters of your secret word: ";
+    cin >> wordLen;
+    return wordLen;
+    
+}
 
 /***
     Args:
-        min (int): left margin of a range
-        max (int): right margin of a range
+        wordLen (int): The desired length of input word
+        vocabulary (vector<string>): The vocabulary
     Returns:
-        number (int) : random number in range [min; max]
+        answer (vector<string>) : A set or word from the vocabulary where the number of character is equal to wordLen
 ***/
-int generateRandomNumber(const int min, const int max)
+vector<string> filterWordsByLen(int wordLen, const vector<string>& vocabulary)
 {
-    // TODO: Return a random integer number between min and max
-    return rand() % (max - min + 1) + min;
-}
-
-vector<string> readWordListFromFile(const string& filePath)
-{
-    vector<string> wordList;
-    string word;
-    ifstream wordFile (filePath);
-    if (!wordFile.is_open()) {
-        throw domain_error("Unable to open file");
+    vector<string> answer;
+    //Write your code here
+    for (string str : vocabulary){
+        if (str.size() != wordLen) continue;
+        answer.push_back(str);
     }
-
-    //while ( getline (wordFile, word) ){  // Thong thuong doc tung line. 
-                                           // Chuong trinh nay cung chay.
-    while (wordFile >> word) {  // Nhung voi chuong trinh nay, doc tung word cung duoc
-                                // Tuc ca 2 cach doc deu chay.
-        wordList.push_back(word);
-        //cout << word << '\n';
-    }
-    wordFile.close();
-
-    return wordList;
-}
-
-/***
-    Args:
-        ch (char): A character
-        word (string): a word
-    Returns:
-        result (bool) : the character ch is in the word or not.
-***/
-bool isCharInWord(const char ch, const string& word)
-{
-    // TODO: return true if ch is in word else return false
-    return word.find(ch) != std::string::npos;
-}
-
-/***
-    Args:
-        wordList (vector<string>): A list of words
-        index (int): an integer number
-    Returns:
-        answer (string) : the lowercase word is in the position index of wordList
-***/
-string chooseWordFromList(const vector<string>& wordList, int index) 
-{
-    // TODO: Return a lowercase word in the index position of the vector wordList.
-    string answer;
-    answer = wordList[index];
-    for (char &ch : answer) ch = tolower(ch);
     return answer;
 }
 
 /***
     Args:
-        answerWord (string): a word that player needs to guess
+        selectedChars (set<char>): The predicted characters
     Returns:
-        secretWord (string): answerWord in hidden form (form of ---)
+        answer (char) : The next character given the provided word is not in the vocabulary
 ***/
-string generateHiddenCharacters(string answerWord){
-    // TODO: Based on answerWord's length, generate hidden characters in form of "---"
-    string secretWord = "";
-    secretWord.append(answerWord.size(), '-');
-    return secretWord;
-}
 
-char getInputCharacter() {
-    char ch;
-    cin >> ch;
-    return tolower(ch);
+char nextCharWhenWordIsNotInDictionary(const set<char>& selectedChars)
+{
+    char answer;
+    //Write your code here
+
+    return answer;
 }
 
 /***
     Args:
-        secretWord (string): secret word in hidden form
-        ch (char): a charater
-        word (string): the answer word
+        candidateWords (vector<string>): The candidate words for the current given string 
     Returns:
-        void
+        answer (map) : The map which count the occurences of character in the set of candidate words
 ***/
-void updateSecretWord(string& secretWord, const char ch, const string& word)
+
+map<char, int> countOccurrences(const vector<string>& candidateWords)
 {
-    // TODO: Update the secret word if the character ch is in the answer word.
-    int wordLen = word.size();
-    for (int i = 0; i < wordLen; ++i){
-        if (word[i] != ch || secretWord[i] != '-') continue;
-        secretWord[i] = ch;
+    map<char, int> answer;
+    //Write your code here
+    for (string str : candidateWords){
+        for (char ch : str){
+            ++answer[ch];
+        }
     }
+    return answer;
 }
 
 /***
     Args:
-        ch (char): a character
-        chars (string): an array of characters
+        occurrences (map<char, int>): The map which count the occurences of character in the set of candidate words
+        selectedChars (set<char>): The predicted characters
     Returns:
-        void
+        answer (char) : The most frequent character
 ***/
-void updateEnteredChars(const char ch, string& chars){
-    // TODO: append the character ch is in end of the text chars
-    chars.append(1, ch);
-    chars.append(" ");
-}
 
-/***
-    Args:
-        incorrectGuess (int): a number that store the number of player's wrong guess
-    Returns:
-        void
-***/
-void updateIncorrectGuess(int& incorrectGuess){
-    // TODO: increase the value of incorrectGuess by 1
-    ++incorrectGuess;
-}
-
-/***
-    Args:
-        ch (char): a character that player enter to console
-        word (string): answer word that play needs to guess
-        secretWord (string): answer word in hidden form
-        correctChars (string): a string that stores correct inputs of player
-        incorrectGuess (int): a number that stores the number of player's wrong guess
-        incorrectChars (string): a string that stores incorrect inputs of player
-    Returns:
-        void
-***/
-void processData(const char ch, const string& word, 
-                string& secretWord, 
-                string& correctChars, 
-                int& incorrectGuess, string& incorrectChars)
+char findMostFrequentChar(const map<char, int>& occurrences, const set<char>& selectedChars)
 {
-    /*** TODO
-        If ch in word:
-            update secretWord: call updateSecretWord() function
-            update correctChars: call updateEnteredChars() function
-        else:
-            update incorrectGuess: call updateIncorrectGuess() function
-            update incorrectChars: call updateEnteredChars() function
-    ***/
-   if (isCharInWord(ch, word)){
-    updateSecretWord(secretWord, ch, word);
-    updateEnteredChars(ch, correctChars);
-   }
-   else{
-    updateIncorrectGuess(incorrectGuess);
-    updateEnteredChars(ch, incorrectChars);
-   }
+    char answer;
+    //Write your code here
+    int max = 0;
+    for (pair<char, int> u : occurrences){
+        if (selectedChars.find(u.first) != selectedChars.end() || u.second <= max) continue;
+        max = u.second;
+        answer = u.first;
+    }
+    return answer;
+}
+
+/***
+    Args:
+        candidateWords (vector<string>): The candidate words for the current given string 
+        selectedChars (set<char>): The predicted characters
+    Returns:
+        answer (char) : The most suitable character for prediction
+***/
+//***
+
+char findBestChar(const vector<string>& candidateWords, const set<char>& selectedChars)
+{
+    char answer;
+    //Write your code here
+    answer = findMostFrequentChar(countOccurrences(candidateWords), selectedChars);
+    return answer;
+}
+
+string getWordMask(char nextChar)
+{
+    string mask;
+    cout << "The next char is: " << nextChar << endl;
+    cout << "Please give me your answer: ";
+    cin >> mask;
+    return mask;
+}
+
+/***
+    Args:
+        ch (char): The predicted character by the AI
+        mask (string): The response mask by the player
+    Returns:
+        answer (bool) : return False if the predicted character is the wrong one, True otherwise
+***/
+
+bool isCorrectChar(char ch, const string& mask)
+{
+    bool answer;
+    //Write your code here
+    answer = isCharInWord(ch, mask);
+    return answer;
+}
+
+/***
+    Args:
+        mask (string): The response mask by the player
+    Returns:
+        answer (bool) : return False if the provided mask is not a whole word, True otherwise
+        (Example: -False: g__d
+                  -True:  good)
+***/
+bool isWholeWord(const string& mask)
+{
+    //Write your code here
+    for (char ch : mask){
+        if (ch < 'a' || ch > 'z') return false;
+    }
+    return true;
+}
+
+/***
+    This function should be used to support the filterWordsByMask function below
+    Args:
+        mask (string): The response mask by the player
+        word (string): input word
+        ch (char): The predicted character by the AI
+    Returns:
+        answer (bool) : return False if the provided mask and the given word is not in the same form.
+        Example: - False: mask(-ood), char 'd' vs word(boot)
+                 - True: mask(-ood), char 'd'  vs word(good)
+
+***/
+bool wordConformToMask(const string& word, const string& mask, char ch) 
+{
+    //Write your code here
+    for (int i = 0; i < mask.size(); ++i){
+        if (ch == mask[i] && ch != word[i]) return false;
+    }
+    return true;
+}
+
+/***
+    Args:
+        mask (string): The response mask by the player
+        words (vector<string>): The candidate words
+        ch (char): The predicted character by the AI
+    Returns:
+        answer (bool) : a list of word which satisfiy the mask and the predicted character
+        Examples: input words: (good,boot,hood,...)
+                  input mask: -ood
+                  predicted char: d
+                  Return: good,hood
+***/
+vector<string> filterWordsByMask(const vector<string>& words, const string& mask, char ch)
+{
+    vector<string> answer;
+    //Write your code here
+    for (string str : words){
+        if (!wordConformToMask(str, mask, ch)) continue;
+        answer.push_back(str);
+    }
+    return answer;
 }
